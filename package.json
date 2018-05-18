@@ -4,16 +4,13 @@
   "description": "",
   "main": "modbus.js",
   "dependencies": {
-    "ip": "^1.1.5",
-    "ipaddr.js": "^1.7.0",
-    "jsmodbus": "^3.0.0",
-    "modbus-stream": "^0.40.1",
-    "modbus-tcp": "^0.4.12"
+    "jsmodbus": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "szy0syz",
+  "license": "MIT",
+  "keywords": ["client", "server", "serial", "port", "modbus", "tcp"]
 }
