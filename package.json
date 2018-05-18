@@ -1,0 +1,19 @@
+{
+  "name": "modbus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "modbus.js",
+  "dependencies": {
+    "ip": "^1.1.5",
+    "ipaddr.js": "^1.7.0",
+    "jsmodbus": "^3.0.0",
+    "modbus-stream": "^0.40.1",
+    "modbus-tcp": "^0.4.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
