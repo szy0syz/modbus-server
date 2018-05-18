@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "modbus.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szy0syz/modbus-server"
+  },
   "dependencies": {
     "jsmodbus": "^3.0.0"
   },
