@@ -1,7 +1,7 @@
 {
   "name": "modbus",
   "version": "1.0.0",
-  "description": "",
+  "description": "modbus server",
   "main": "modbus.js",
   "repository": {
     "type": "git",
@@ -10,11 +10,20 @@
   "dependencies": {
     "jsmodbus": "^3.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "debug": "^3.1.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./serv.js"
   },
   "author": "szy0syz",
   "license": "MIT",
-  "keywords": ["client", "server", "serial", "port", "modbus", "tcp"]
+  "keywords": [
+    "client",
+    "server",
+    "serial",
+    "port",
+    "modbus",
+    "tcp"
+  ]
 }

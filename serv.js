@@ -1,7 +1,5 @@
 'use strict'
 
-const IP = require('ip')
-
 let net = require('net')
 let modbus = require('jsmodbus')
 let netServer = new net.Server()
@@ -65,6 +63,8 @@ server.on('postWriteMultipleRegisters', function(value) {
 server.on('connection', function(client) {
   console.log('收到DTU注册封包：')
   client.socket.on('data', data => {
+    console.log('myIP', client.socket.myIP)
+    console.dir(client.socket.remoteAddress)
     console.log('data原始值: ', data, data.toString('ascii'))
     let id = data.slice(0, 4)
     let ip = data.slice(data.length - 5, data.length - 1)
@@ -75,6 +75,7 @@ server.on('connection', function(client) {
     console.log('id:', id)
     console.log('simNumber:', simNumber.toString())
     console.log('ip:', ip)
+    client.socket.myIP = ip
   })
 })
 
@@ -99,18 +100,6 @@ function toId(buf) {
     return next.toString(16) + acc
   }, '')
   return buf
-}
-
-function ishex(num) {
-  var validChar = '0123456789ABCDEF'
-  var flag = true
-  var x = num.toUpperCase()
-  for (let idx = 0; idx < x.length; idx++) {
-    if (validChar.indexOf(x.charAt(idx)) < 0) {
-      return false
-    }
-  }
-  return true
 }
 
 function toIp(ip) {
