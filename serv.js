@@ -92,7 +92,9 @@ server.on('connection', function(client) {
 // server.input.writeUInt16BE(0xff00, 0)
 // server.input.writeUInt16BE(0xff00, 2)
 
-netServer.listen(14444)
+netServer.listen(14444, function() {
+  console.log('TCP serv is start at 14444 port.')
+})
 
 function toId(buf) {
   buf = buf.reduce((acc, next) => {
