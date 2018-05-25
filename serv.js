@@ -63,19 +63,20 @@ server.on('postWriteMultipleRegisters', function(value) {
 server.on('connection', function(client) {
   console.log('收到DTU注册封包：')
   client.socket.on('data', data => {
-    console.log('myIP', client.socket.myIP)
+    // console.log('myIP', client.socket.myIP)
     console.dir(client.socket.remoteAddress)
     console.log('data原始值: ', data, data.toString('ascii'))
-    let id = data.slice(0, 4)
-    let ip = data.slice(data.length - 5, data.length - 1)
-    let simNumber = data.slice(3, data.length - 6)
-    id = toId(id)
-    ip = toIp(ip)
 
-    console.log('id:', id)
-    console.log('simNumber:', simNumber.toString())
-    console.log('ip:', ip)
-    client.socket.myIP = ip
+    // let id = data.slice(0, 4)
+    // let ip = data.slice(data.length - 5, data.length - 1)
+    // let simNumber = data.slice(3, data.length - 6)
+    // id = toId(id)
+    // ip = toIp(ip)
+
+    // console.log('id:', id)
+    // console.log('simNumber:', simNumber.toString())
+    // console.log('ip:', ip)
+    // client.socket.myIP = ip
   })
 })
 
