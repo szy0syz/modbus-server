@@ -1,5 +1,6 @@
 'use strict'
 
+const fs = require('fs')
 let net = require('net')
 let modbus = require('jsmodbus')
 let netServer = new net.Server()
@@ -65,7 +66,19 @@ server.on('connection', function(client) {
   client.socket.on('data', data => {
     // console.log('myIP', client.socket.myIP)
     console.dir(client.socket.remoteAddress)
-    console.log('data原始值: ', data, data.toString('ascii'))
+    //console.log('data原始值: ', data, data.toString('ascii'))
+    console.info(data)
+    console.log(data.toString('ascii'))
+
+    fs.appendFile(
+      'data.txt',
+      data + '\n\n',
+      'utf8',
+      err => {
+        if (err) throw err
+        console.log('The file has been saved!')
+      }
+    )
 
     // let id = data.slice(0, 4)
     // let ip = data.slice(data.length - 5, data.length - 1)
