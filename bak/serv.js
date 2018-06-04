@@ -6,11 +6,11 @@ let modbus = require('jsmodbus')
 let netServer = new net.Server()
 let server = new modbus.server.TCP(netServer)
 
-server.on('connection', function (client) {
+server.on('connection', function(client) {
   console.log('New Connection')
 })
 
-server.on('readCoils', function (request, response, send) {
+server.on('readCoils', function(request, response, send) {
   /* Implement your own */
   console.log('on-readCoils~~~')
   console.log(request)
@@ -20,11 +20,11 @@ server.on('readCoils', function (request, response, send) {
   send(response)
 })
 
-server.on('readHoldingRegisters', function (request, response, send) {
+server.on('readHoldingRegisters', function(request, response, send) {
   /* Implement your own */
 })
 
-server.on('preWriteSingleRegister', function (value, address) {
+server.on('preWriteSingleRegister', function(value, address) {
   console.log('Write Single Register')
   console.log(
     'Original {register, value}: {',
@@ -35,7 +35,7 @@ server.on('preWriteSingleRegister', function (value, address) {
   )
 })
 
-server.on('WriteSingleRegister', function (value, address) {
+server.on('WriteSingleRegister', function(value, address) {
   console.log(
     'New {register, value}: {',
     address,
@@ -45,81 +45,40 @@ server.on('WriteSingleRegister', function (value, address) {
   )
 })
 
-server.on('writeMultipleCoils', function (value) {
+server.on('writeMultipleCoils', function(value) {
   console.log('Write multiple coils - Existing: ', value)
 })
 
-server.on('postWriteMultipleCoils', function (value) {
+server.on('postWriteMultipleCoils', function(value) {
   console.log('Write multiple coils - Complete: ', value)
 })
 
-server.on('writeMultipleRegisters', function (value) {
+server.on('writeMultipleRegisters', function(value) {
   console.log('Write multiple registers - Existing: ', value)
 })
 
-server.on('postWriteMultipleRegisters', function (value) {
+server.on('postWriteMultipleRegisters', function(value) {
   console.log('Write multiple registers - Complete: ', value)
 })
 
-// const writeStream = fs.createWriteStream("modbus.bin") 
-
-// writeStream.on("open", function(fd) {
-//   console.log("需要被写入的文件已被打开。");
-// })
-
-// writeStream.end("The end.", function() {
-//   console.log("文件全部写入完毕。");
-//   console.log("共写入%d字节数据。", writeStream.bytesWritten);
-// })
-
-server.on('connection', function (client) {
-  console.log('recive DTU:')
+server.on('connection', function(client) {
+  console.log('收到DTU注册封包：')
   client.socket.on('data', data => {
     // console.log('myIP', client.socket.myIP)
-    console.log(new Date().toLocaleString())
     console.dir(client.socket.remoteAddress)
-    //console.log('dataԭʼֵ: ', data, data.toString('ascii'))
+    //console.log('data原始值: ', data, data.toString('ascii'))
     console.info(data)
     console.log(data.toString('ascii'))
 
-    // writeStream.write(data + '\r\n')
-
     fs.appendFile(
-      'data.bin',
-      data,
-      'utf-8',
+      'data.txt',
+      data + '\n\n',
+      'utf8',
       err => {
         if (err) throw err
         console.log('The file has been saved!')
       }
     )
-
-
-    // let res
-
-    // try {
-    //   if (data.indexOf('0141', 0, 'hex') >= 0) {
-    //     res = getData(data)
-    //   } else {
-    //     res = data
-    //   }
-    // } catch (err) {
-    //   console.error(err)
-    // }
-
-    // console.log(res)
-
-    // fs.appendFile(
-    //   'data.bin',
-    //   res,
-    //   'utf-8',
-    //   err => {
-    //     if (err) throw err
-    //     console.log('The file has been saved!')
-    //   }
-    // )
-
-
 
     // let id = data.slice(0, 4)
     // let ip = data.slice(data.length - 5, data.length - 1)
@@ -147,7 +106,7 @@ server.on('connection', function (client) {
 // server.input.writeUInt16BE(0xff00, 0)
 // server.input.writeUInt16BE(0xff00, 2)
 
-netServer.listen(14444, function () {
+netServer.listen(14444, function() {
   console.log('TCP serv is start at 14444 port.')
 })
 
@@ -165,25 +124,4 @@ function toIp(ip) {
     return acc + '.' + next
   }, '')
   return ip
-}
-
-function getData(buf) {
-  const reg = new RegExp(/bfbd/g)
-
-  buf = buf.toString('hex')
-
-  // 删除bdbd的数量
-  const counter = buf.match(reg) || buf.match(reg).length || 0
-
-  buf = Buffer.from(buf.replace(reg, ''), 'hex')
-
-  const oriLength = parseInt(buf.slice(2, 4).toString('hex'), 16)
-
-  let newLength = (oriLength - counter * 2 - 2 - 2 - 2 - 1)
-
-  newLength = newLength > 255 ? newLength.toString(16) : '00' + newLength.toString(16)
-
-  buf.write(newLength, 2, 2, 'hex')
-
-  return buf
 }
