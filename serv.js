@@ -75,14 +75,22 @@ server.on('postWriteMultipleRegisters', function (value) {
 server.on('connection', function (client) {
   console.log('recive DTU:')
   client.socket.on('data', data => {
-    // console.log('myIP', client.socket.myIP)
+
     console.log(new Date().toLocaleString())
     console.dir(client.socket.remoteAddress)
-    //console.log('dataԭʼֵ: ', data, data.toString('ascii'))
+
     console.info(data)
     console.log(data.toString('ascii'))
 
-    // writeStream.write(data + '\r\n')
+    let res
+
+    if (isValid(data)) {
+      res = new RtuData(data)
+      console.log('收到数据包')
+      console.dir(res)
+    } else {
+      console.error('收到异常数据')
+    }
 
     fs.appendFile(
       'data.bin',
@@ -94,43 +102,6 @@ server.on('connection', function (client) {
       }
     )
 
-
-    // let res
-
-    // try {
-    //   if (data.indexOf('0141', 0, 'hex') >= 0) {
-    //     res = getData(data)
-    //   } else {
-    //     res = data
-    //   }
-    // } catch (err) {
-    //   console.error(err)
-    // }
-
-    // console.log(res)
-
-    // fs.appendFile(
-    //   'data.bin',
-    //   res,
-    //   'utf-8',
-    //   err => {
-    //     if (err) throw err
-    //     console.log('The file has been saved!')
-    //   }
-    // )
-
-
-
-    // let id = data.slice(0, 4)
-    // let ip = data.slice(data.length - 5, data.length - 1)
-    // let simNumber = data.slice(3, data.length - 6)
-    // id = toId(id)
-    // ip = toIp(ip)
-
-    // console.log('id:', id)
-    // console.log('simNumber:', simNumber.toString())
-    // console.log('ip:', ip)
-    // client.socket.myIP = ip
   })
 })
 
@@ -186,4 +157,26 @@ function getData(buf) {
   buf.write(newLength, 2, 2, 'hex')
 
   return buf
+}
+
+function isValid(data) {
+  // TODO: 验证数据包是否合法(暂时只要一个数据包情况)
+  return !!(data.indexOf('01410058', 0, 'hex') >= 0)
+}
+
+function RtuData(data) {
+  this.optCode = data.slice(0, 2)  // -> 0x01 0x41
+  this.count = 1  // -> 封包数量
+  this.oriData = data.slice(4, data.length - 6)  // TODO: 迭代
+  this.data = [   // ->　数据包
+    {
+      date: this.oriData.slice(0, 4),
+      DI: this.oriData.slice(4, 6),
+      DO: this.oriData.slice(6, 8),
+      analogReg: this.oriData.slice(8, 8 + 16),
+      innerReg: this.oriData.slice(24, 24 + 16),
+      outerReg: this.oriData.slice(40, this.oriData.length)
+    }
+  ]
+  this.crc = data.slice(data.length - 2, data.length)
 }
