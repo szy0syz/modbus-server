@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const MainSchema = new Schema({
+const LogSchema = new Schema({
   data: Schema.Types.Buffer,
   meta: {
     createdAt: {
@@ -16,4 +16,4 @@ const MainSchema = new Schema({
   }
 })
 
-mongoose.model('main', UserSchema)
+mongoose.model('log', LogSchema)
