@@ -28,11 +28,11 @@ const MainSchema = new Schema({
   }
 })
 
-// 虚拟字段，没有实际存入数据库中，类似计算字段
-UserSchema.virtual('isLocked').get(function () {
-  return true
-})
+// // 虚拟字段，没有实际存入数据库中，类似计算字段
+// UserSchema.virtual('isLocked').get(function () {
+//   return true
+// })
 
 
 
-mongoose.model('main', UserSchema)
+mongoose.model('main', MainSchema)
