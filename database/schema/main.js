@@ -8,9 +8,14 @@ const MainSchema = new Schema({
   _oriData: Schema.Types.Buffer,
   _data: [
     {
-        date: Schema.Types.Date
+        date: Schema.Types.Buffer,
+        DI: Schema.Types.Buffer,
+        analogReg: Schema.Types.Buffer,
+        innerReg: Schema.Types.Buffer,
+        outerReg: Schema.Types.Buffer
     }
   ],
+  _crc: Schema.Types.Buffer,
   meta: {
     createdAt: {
       type: Date,

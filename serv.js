@@ -6,8 +6,42 @@ let modbus = require('jsmodbus')
 let netServer = new net.Server()
 let server = new modbus.server.TCP(netServer)
 
+//////////
+const path = require('path')
+const mongoose = require('mongoose')
+const config = require('./config.json')
+
+mongoose.plugin(require('./database/plugins/meta'))
+const modelsPath = path.resolve(__dirname, './database/schema')
+
+// 加载database/schema/目录下的model文件
+fs
+  .readdirSync(modelsPath)
+  .filter(file => ~file.search(/\.js$/))
+  .forEach(file => require(path.resolve(modelsPath, file)))
+
+const mainModel = mongoose.model('main')
+const logModel = mongoose.model('log')
+/////////
+
 server.on('connection', function (client) {
   console.log('New Connection')
+
+  mongoose.set('debug', true)
+
+  mongoose.connect(config.db)
+
+  mongoose.connection.on('disconnected', () => {
+    mongoose.connect(config.db)
+  })
+
+  mongoose.connection.on('error', err => {
+    console.error(err)
+  })
+
+  mongoose.connection.on('open', async () => {
+    console.log('Connected to MongoDB ', config.db)
+  })
 })
 
 server.on('readCoils', function (request, response, send) {
@@ -83,14 +117,23 @@ server.on('connection', function (client) {
     console.log(data.toString('ascii'))
 
     let res
-
-    if (isValid(data)) {
-      res = new RtuData(data)
-      console.log('收到数据包')
-      console.dir(res)
-    } else {
-      console.error('收到异常数据')
+    try {
+      if (isValid(data)) {
+        res = new RtuData(data)
+        console.log('收到数据包')
+        console.dir(res)
+        res = new mainModel(res)
+        res.save()
+      } else {
+        console.error('收到无法解析的数据')
+        res = new logModel()
+        res.data = data
+        res.save()
+      }
+    } catch (err) {
+      console.error(err)
     }
+
 
     fs.appendFile(
       'data.bin',
