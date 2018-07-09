@@ -15,7 +15,8 @@
     "debug": "^3.1.0"
   },
   "scripts": {
-    "test": "node ./serv.js"
+    "test": "node ./serv.js",
+    "dev": "node ./serv.js"
   },
   "author": "szy0syz",
   "license": "MIT",

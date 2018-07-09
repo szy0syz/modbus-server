@@ -165,43 +165,6 @@ netServer.listen(14444, function () {
   console.log('TCP serv is start at 14444 port.')
 })
 
-function toId(buf) {
-  buf = buf.reduce((acc, next) => {
-    if (next === 0) return acc
-    return next.toString(16) + acc
-  }, '')
-  return buf
-}
-
-function toIp(ip) {
-  ip = ip.reduce((acc, next) => {
-    if (!acc) return acc + next
-    return acc + '.' + next
-  }, '')
-  return ip
-}
-
-function getData(buf) {
-  const reg = new RegExp(/bfbd/g)
-
-  buf = buf.toString('hex')
-
-  // 删除bdbd的数量
-  const counter = buf.match(reg) || buf.match(reg).length || 0
-
-  buf = Buffer.from(buf.replace(reg, ''), 'hex')
-
-  const oriLength = parseInt(buf.slice(2, 4).toString('hex'), 16)
-
-  let newLength = (oriLength - counter * 2 - 2 - 2 - 2 - 1)
-
-  newLength = newLength > 255 ? newLength.toString(16) : '00' + newLength.toString(16)
-
-  buf.write(newLength, 2, 2, 'hex')
-
-  return buf
-}
-
 function isValid(data) {
   // TODO: 验证数据包是否合法(暂时只要一个数据包情况)
   return !!(data.indexOf('01410058', 0, 'hex') >= 0)
